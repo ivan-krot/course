@@ -1,0 +1,1 @@
+console.log('user_scritp.js working on this page !');
