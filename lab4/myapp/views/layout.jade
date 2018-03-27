@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/user_script.js')
+  body
+    block content
+    
+    footer
+      -var curr_year = new Date().getFullYear();
+      p.
+        #{curr_year} - ExpressJS - All rights reserved. Developed and supporting by Ivan Krot.

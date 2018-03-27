@@ -1,0 +1,14 @@
+body {
+  width: 85%;
+  margin: 0 auto;
+  font: 1em "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+ul li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: #00B7FF;
+}
