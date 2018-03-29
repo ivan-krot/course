@@ -5,4 +5,8 @@ block content
     p List of all users
         ol.users_list
             for user in users_list
-                li= user
+                li
+                    span.first_name= user[0]
+                    span.second_name= user[1]
+    p You can add new user 
+        a(href='/add') here

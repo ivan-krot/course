@@ -4,7 +4,7 @@ var router = express.Router();
 var bmr = require('../my_modules/bymereader');
 
 //read users data from file in 'page' variable
-var page = 'users.txt';
+var page = 'users.csv';
 var users = bmr(page);
 
 /* GET users listing. */

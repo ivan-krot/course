@@ -12,3 +12,11 @@ a {
   text-decoration: none;
   color: #00B7FF;
 }
+
+.users_list li span {
+  padding-right: .5em;
+}
+
+form > div {
+  padding: .5em 0;
+}

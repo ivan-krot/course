@@ -4,11 +4,13 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+//my module
+var bmw = require('./my_modules/bymewriter');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 //my path
-var create = require('./routes/create');
+var add = require('./routes/add');
 
 var app = express();
 
@@ -16,17 +18,31 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// создаем парсер для данных application/x-www-form-urlencoded
+var urlencodedParser = bodyParser.urlencoded({extended: false});
+
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
 //my route
-app.use('/create', create)
+app.use('/add', add)
+
+app.post("/save_user", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    //console.log(request.body);
+    //response.send(`${request.body.fName} - ${request.body.sName}`);
+    var page = 'users.csv';
+    var data = '\n'+request.body.fName+','+request.body.sName;
+    
+    bmw(data,page);
+    response.send('User : '+request.body.fName+' '+request.body.sName+' was successfully added to '+page+' file.');
+});
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
