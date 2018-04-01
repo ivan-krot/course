@@ -11,6 +11,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 //my path
 var add = require('./routes/add');
+var success = require('./routes/success');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use('/', routes);
 app.use('/users', users);
 //my route
 app.use('/add', add)
+app.use('/success', success)
 
 app.post("/save_user", urlencodedParser, function (request, response) {
     if(!request.body) return response.sendStatus(400);
@@ -41,7 +43,11 @@ app.post("/save_user", urlencodedParser, function (request, response) {
     var data = '\n'+request.body.fName+','+request.body.sName;
     
     bmw(data,page);
-    response.send('User : '+request.body.fName+' '+request.body.sName+' was successfully added to '+page+' file.');
+    response.render('success', {
+        fName: request.body.fName,
+        sName: request.body.sName,
+        title: 'Success !'
+    });
 });
 
 /// catch 404 and forwarding to error handler
