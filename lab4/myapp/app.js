@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 //my module
 var bmw = require('./my_modules/bymewriter');
+var bmc = require('./my_modules/bymecapitalizer');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -20,12 +21,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // создаем парсер для данных application/x-www-form-urlencoded
-var urlencodedParser = bodyParser.urlencoded({extended: false});
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -36,22 +37,33 @@ app.use('/add', add)
 app.use('/success', success)
 
 app.post("/save_user", urlencodedParser, function (request, response) {
-    if(!request.body) return response.sendStatus(400);
+    if (!request.body) return response.sendStatus(400);
     //console.log(request.body);
     //response.send(`${request.body.fName} - ${request.body.sName}`);
     var page = 'users.csv';
-    var data = '\n'+request.body.fName+','+request.body.sName;
-    
-    bmw(data,page);
-    response.render('success', {
-        fName: request.body.fName,
-        sName: request.body.sName,
-        title: 'Success !'
-    });
+    var fName = request.body.fName;
+    var sName = request.body.sName;
+    if (fName && sName) {
+        var data = '\n' + bmc(fName) + ',' + bmc(sName);
+        bmw(data, page);
+        response.render('success', {
+            fName: fName,
+            sName: sName,
+            title: 'Success !'
+        });
+        //redirect to ->
+        //response.redirect('/users');
+    } else {
+        response.render('add', {
+            error: 'Error ! Data are not saved. Please, fill all fields of form.',
+            fName: fName,
+            sName: sName
+        });
+    }
 });
 
 /// catch 404 and forwarding to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -62,7 +74,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
+    app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -73,7 +85,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,

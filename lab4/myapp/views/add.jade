@@ -2,13 +2,14 @@ extends layout
 
 block content
     h1 Add a new User
-    form(action="/save_user" method="post")
+    span.error= error
+    form(action="/save_user" method="post" id="addform")
         div
             label First name :
                 br
-                input(type="text", name="fName" placeholder='Enter first name here')
+                input(type="text", name="fName" placeholder="Enter first name here" required id="fname_id" value=fName)
         div
             label Second name :
                 br
-                input(type="text", name="sName" placeholder='Enter second name here')
-        input(type="submit")
+                input(type="text", name="sName" placeholder="Enter second name here" required id="sname_id" value=sName)
+        button(type="button" onclick="document.getElementById('addform').submit()") Submit

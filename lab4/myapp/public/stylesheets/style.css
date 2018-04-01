@@ -20,3 +20,9 @@ a {
 form > div {
   padding: .5em 0;
 }
+
+.error {
+  color: #c00;
+  font-weight: bold;
+  font-style: italic;
+}
