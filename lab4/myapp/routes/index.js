@@ -5,7 +5,7 @@ var config = require('../config');
 var client = new twitter(config.twitter);
 /* GET home page. */
 router.get('/', function (req, res) {
-  var params = { screen_name: 'nodejs' };//user_id
+  var params = { screen_name: 'Krot_John' };//user_id
   client.get('statuses/user_timeline', params, function (error, tweets, response) {
     if (!error) {
       var tw = (tweets.map((twit) => {

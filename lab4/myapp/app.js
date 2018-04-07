@@ -4,6 +4,10 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+//by me module
+var twitter = require('twitter');
+var config = require('./config');
+var client = new twitter(config.twitter);
 //my module
 var bmw = require('./my_modules/bymewriter');
 var bmc = require('./my_modules/bymecapitalizer');
@@ -43,6 +47,13 @@ app.post("/save_user", urlencodedParser, function (request, response) {
     var page = 'users.csv';
     var fName = request.body.fName;
     var sName = request.body.sName;
+    //post tweet in user timeline
+    client.post('statuses/update', {status: 'post content here'},  function(error, tweet, response) {
+        if(error) throw error;
+        //console.log(tweet);  // Tweet body. 
+        //console.log(response);  // Raw response object. 
+      });
+
     if (fName && sName) {
         var data = '\n' + bmc(fName) + ',' + bmc(sName);
         bmw(data, page);
