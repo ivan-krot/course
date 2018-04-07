@@ -2,6 +2,7 @@ body {
   width: 85%;
   margin: 0 auto;
   font: 1em "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #ccc; 
 }
 
 ul li {
@@ -19,6 +20,11 @@ a {
 
 form > div {
   padding: .5em 0;
+}
+
+table tr {
+  width: 100%;
+  padding: 1em 0;
 }
 
 .error {
