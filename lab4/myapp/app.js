@@ -11,6 +11,7 @@ var client = new twitter(config.twitter);
 //my module
 var bmw = require('./my_modules/bymewriter');
 var bmc = require('./my_modules/bymecapitalizer');
+var bmr = require('./my_modules/bymereader');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -45,28 +46,31 @@ app.post("/save_user", urlencodedParser, function (request, response) {
     //console.log(request.body);
     //response.send(`${request.body.fName} - ${request.body.sName}`);
     var page = 'users.csv';
-    var fName = request.body.fName;
-    var sName = request.body.sName;
-    //post tweet in user timeline
-    client.post('statuses/update', {status: 'post content here'},  function(error, tweet, response) {
-        if(error) throw error;
-        //console.log(tweet);  // Tweet body. 
-        //console.log(response);  // Raw response object. 
-      });
+    var fName = bmc(request.body.fName);
+    var sName = bmc(request.body.sName);
+    var twitterAccount = request.body.twitterAccount;
+    var user_id = +bmr(page).length + 1;
 
-    if (fName && sName) {
-        var data = '\n' + bmc(fName) + ',' + bmc(sName);
+    if (fName && sName && twitterAccount[0] === '@') {
+        var data = '\n' + fName + ',' + sName + ',' + twitterAccount;
         bmw(data, page);
         response.render('success', {
             fName: fName,
             sName: sName,
+            twitterAccount: twitterAccount,
             title: 'Success !'
+        });
+        //post tweet in user timeline
+        client.post('statuses/update', { status: 'Hello, ' + fName + ' ' + sName + ' (' + twitterAccount + '). Your id is: ' + user_id }, function (error, tweet, response) {
+            if (error) throw error;
         });
         //redirect to ->
         //response.redirect('/users');
     } else {
+        var msg = 'Error ! Data are not saved. ';
+        var msg = twitterAccount[0] === '@' ? msg+'Please, fill all fields of form.' : msg+'Invalid screen name (must start with @)';
         response.render('add', {
-            error: 'Error ! Data are not saved. Please, fill all fields of form.',
+            error: msg,
             fName: fName,
             sName: sName
         });

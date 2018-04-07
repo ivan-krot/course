@@ -2,12 +2,12 @@ extends layout
 
 block content
   h1= title
-  h2 Output username here
   p Welcome to #{title}
   div.description
     p This app name: #{appName}.
     p For showing user list, click 
       a(href='/users') here
+  h4 Posts from #{name} timeline :
   ul
   for tex in text
     li=tex.text
