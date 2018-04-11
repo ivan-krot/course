@@ -23,27 +23,31 @@ const findDocuments = function (db, callback) {
   // Find some documents
   collection.find({}).toArray(function (err, docs) {
     assert.equal(err, null);
-    console.log("Found the following records");
-    console.log(docs);
     my_data = docs;
+    //console.log("Found the following records users.js");
+    //console.log(docs);
     callback(docs);
   });
 }
 
 // Use connect method to connect to the server
-MongoClient.connect(uri, function (err, client) {
-  assert.equal(null, err);
-  console.log("Connected successfully to server");
-  const db = client.db(dbName);
+var refresh = function (){
+  MongoClient.connect(uri, function (err, client) {
+    assert.equal(null, err);
+    //console.log("Connected successfully to server users.js");
+    const db = client.db(dbName);
   
-  //db.collection('users').insert( { firstName: "Ivan", lastName: "Krot", twitter: "@i_m_krot" } );
-  findDocuments(db, function() {
-    client.close();
+    findDocuments(db, function () {
+      client.close();
+    });
   });
-});
+}
+
+refresh();
 
 /* GET users listing. */
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
+  refresh();
   res.render('users', {
     title: 'Express - Users',
     appName: 'BrainBasket JS',

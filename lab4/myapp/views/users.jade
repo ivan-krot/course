@@ -12,6 +12,7 @@ block content
                     span.first_name= user.firstName
                     span.second_name= user.lastName /*change secondName -> lastName in form*/
                     span.twitter= user.twitter
+                    span (id: #{user._id})
         
         p You can add new user 
             a(href='/add') here

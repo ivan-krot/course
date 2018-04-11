@@ -1,5 +1,8 @@
 var express = require('express');
 var router = express.Router();
+//mongo_db
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
 
 /* GET users listing. */
 router.get('/', function(req, res) {

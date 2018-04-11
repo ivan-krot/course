@@ -8,10 +8,20 @@ var bodyParser = require('body-parser');
 var twitter = require('twitter');
 var config = require('./config');
 var client = new twitter(config.twitter);
+//mongo_db
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
 //my module
 var bmw = require('./my_modules/bymewriter');
 var bmc = require('./my_modules/bymecapitalizer');
 var bmr = require('./my_modules/bymereader');
+
+//Mongo
+// Connection URL -> cluster -> config file
+var uri = "mongodb://TheMole:TheMole@clustercourse-shard-00-00-kultg.mongodb.net:27017,clustercourse-shard-00-01-kultg.mongodb.net:27017,clustercourse-shard-00-02-kultg.mongodb.net:27017/test?ssl=true&replicaSet=ClusterCourse-shard-0&authSource=admin";
+// Database config
+const dbName = 'test';
+const collectName = 'users';
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -60,6 +70,15 @@ app.post("/save_user", urlencodedParser, function (request, response) {
             twitterAccount: twitterAccount,
             title: 'Success !'
         });
+        //send in MongoDB
+        // Use connect method to connect to the server
+        MongoClient.connect(uri, function (err, client) {
+            assert.equal(null, err);
+            console.log("Connected successfully to server for adding a new user in app.js");
+            const db = client.db(dbName);
+            db.collection(collectName).insert( { firstName: fName, lastName: lName, twitter: twitterAccount } );
+            client.close();
+        });
         //post tweet in user timeline
         client.post('statuses/update', { status: 'Hello, ' + fName + ' ' + lName + ' (' + twitterAccount + '). Your id is: ' + user_id }, function (error, tweet, response) {
             if (error) throw error;
@@ -68,7 +87,7 @@ app.post("/save_user", urlencodedParser, function (request, response) {
         //response.redirect('/users');
     } else {
         var msg = 'Error ! Data are not saved. ';
-        var msg = twitterAccount[0] === '@' ? msg+'Please, fill all fields of form.' : msg+'Invalid screen name (must start with @)';
+        var msg = twitterAccount[0] === '@' ? msg + 'Please, fill all fields of form.' : msg + 'Invalid screen name (must start with @)';
         response.render('add', {
             error: msg,
             fName: fName,
