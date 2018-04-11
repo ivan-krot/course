@@ -2,12 +2,16 @@ extends layout
 
 block content
     h1= title
-    p List of all users
+    if !mongo_result
+        span.error Database connection failed ! Users list unavaliable now :(
+    else
+        p List of all users
         ol.users_list
-            for user in users_list
+            for user in mongo_result
                 li
-                    span.first_name= user[0]
-                    span.second_name= user[1]
-                    span.twitter= user[2]
-    p You can add new user 
-        a(href='/add') here
+                    span.first_name= user.firstName
+                    span.second_name= user.lastName /*change secondName -> lastName in form*/
+                    span.twitter= user.twitter
+        
+        p You can add new user 
+            a(href='/add') here

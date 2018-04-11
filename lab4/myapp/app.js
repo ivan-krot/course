@@ -44,24 +44,24 @@ app.use('/success', success)
 app.post("/save_user", urlencodedParser, function (request, response) {
     if (!request.body) return response.sendStatus(400);
     //console.log(request.body);
-    //response.send(`${request.body.fName} - ${request.body.sName}`);
+    //response.send(`${request.body.fName} - ${request.body.lName}`);
     var page = 'users.csv';
     var fName = bmc(request.body.fName);
-    var sName = bmc(request.body.sName);
+    var lName = bmc(request.body.lName);
     var twitterAccount = request.body.twitterAccount;
     var user_id = +bmr(page).length + 1;
 
-    if (fName && sName && twitterAccount[0] === '@') {
-        var data = '\n' + fName + ',' + sName + ',' + twitterAccount;
+    if (fName && lName && twitterAccount[0] === '@') {
+        var data = '\n' + fName + ',' + lName + ',' + twitterAccount;
         bmw(data, page);
         response.render('success', {
             fName: fName,
-            sName: sName,
+            lName: lName,
             twitterAccount: twitterAccount,
             title: 'Success !'
         });
         //post tweet in user timeline
-        client.post('statuses/update', { status: 'Hello, ' + fName + ' ' + sName + ' (' + twitterAccount + '). Your id is: ' + user_id }, function (error, tweet, response) {
+        client.post('statuses/update', { status: 'Hello, ' + fName + ' ' + lName + ' (' + twitterAccount + '). Your id is: ' + user_id }, function (error, tweet, response) {
             if (error) throw error;
         });
         //redirect to ->
@@ -72,7 +72,7 @@ app.post("/save_user", urlencodedParser, function (request, response) {
         response.render('add', {
             error: msg,
             fName: fName,
-            sName: sName
+            lName: lName
         });
     }
 });
