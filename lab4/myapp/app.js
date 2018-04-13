@@ -12,9 +12,7 @@ var client = new twitter(config.twitter);
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 //my module
-var bmw = require('./my_modules/bymewriter');
 var bmc = require('./my_modules/bymecapitalizer');
-var bmr = require('./my_modules/bymereader');
 
 //Mongo
 // Connection URL -> cluster -> config file
@@ -54,35 +52,45 @@ app.use('/success', success)
 app.post("/save_user", urlencodedParser, function (request, response) {
     if (!request.body) return response.sendStatus(400);
     //console.log(request.body);
-    //response.send(`${request.body.fName} - ${request.body.lName}`);
-    var page = 'users.csv';
+    //response.send(`${request.body.fName} - ${request.body.lName}`)
     var fName = bmc(request.body.fName);
     var lName = bmc(request.body.lName);
     var twitterAccount = request.body.twitterAccount;
-    var user_id = +bmr(page).length + 1;
+    var user_id;;
 
     if (fName && lName && twitterAccount[0] === '@') {
-        var data = '\n' + fName + ',' + lName + ',' + twitterAccount;
-        bmw(data, page);
-        response.render('success', {
-            fName: fName,
-            lName: lName,
-            twitterAccount: twitterAccount,
-            title: 'Success !'
-        });
         //send in MongoDB
         // Use connect method to connect to the server
         MongoClient.connect(uri, function (err, client) {
             assert.equal(null, err);
             console.log("Connected successfully to server for adding a new user in app.js");
             const db = client.db(dbName);
-            db.collection(collectName).insert( { firstName: fName, lastName: lName, twitter: twitterAccount } );
+            var objectToInsert = {
+                firstName: fName,
+                lastName: lName,
+                twitter: twitterAccount
+            };
+            db.collection(collectName).insert(objectToInsert, function (err, docsInserted) {
+                //callback which contain UserData
+/**Switch off Tweets by comment string bellow */
+                tweet_poster(docsInserted.insertedIds[0]);
+            });
+
             client.close();
+            response.render('success', {
+                fName: fName,
+                lName: lName,
+                twitterAccount: twitterAccount,
+                title: 'Success !'
+            });
         });
+
         //post tweet in user timeline
-        client.post('statuses/update', { status: 'Hello, ' + fName + ' ' + lName + ' (' + twitterAccount + '). Your id is: ' + user_id }, function (error, tweet, response) {
-            if (error) throw error;
-        });
+        function tweet_poster(user_id) {
+            client.post('statuses/update', { status: 'Hello, ' + fName + ' ' + lName + ' (' + twitterAccount + '). Your id is: ' + user_id }, function (error, tweet, response) {
+                if (error) throw error;
+            });
+        }
         //redirect to ->
         //response.redirect('/users');
     } else {

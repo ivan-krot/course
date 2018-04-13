@@ -3,12 +3,6 @@ var router = express.Router();
 //mongo_db
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
-//my module
-var bmr = require('../my_modules/bymereader');
-
-//read users data from file in 'page' variable
-var page = 'users.csv';
-var users = bmr(page);
 
 // Connection URL -> cluster -> config file
 var uri = "mongodb://TheMole:TheMole@clustercourse-shard-00-00-kultg.mongodb.net:27017,clustercourse-shard-00-01-kultg.mongodb.net:27017,clustercourse-shard-00-02-kultg.mongodb.net:27017/test?ssl=true&replicaSet=ClusterCourse-shard-0&authSource=admin";
@@ -30,8 +24,10 @@ const findDocuments = function (db, callback) {
   });
 }
 
-// Use connect method to connect to the server
-var refresh = function (){
+
+/* GET users listing. */
+router.get('/', function (req, res) {
+  // Use connect method to connect to the server
   MongoClient.connect(uri, function (err, client) {
     assert.equal(null, err);
     //console.log("Connected successfully to server users.js");
@@ -39,22 +35,14 @@ var refresh = function (){
   
     findDocuments(db, function () {
       client.close();
+      /* here !!! */
+      res.render('users', {
+        title: 'Express - Users',
+        appName: 'BrainBasket JS',
+        mongo_result: my_data
+      });
     });
   });
-}
-
-refresh();
-
-/* GET users listing. */
-router.get('/', function (req, res) {
-  refresh();
-  res.render('users', {
-    title: 'Express - Users',
-    appName: 'BrainBasket JS',
-    users_list: bmr(page),
-    mongo_result: my_data
-  });
-  //res.send('Respond with a resource');
 });
 
 module.exports = router;
