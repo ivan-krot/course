@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    h1 Add a new User
+    span.error= error
+    form(action="/save_user" method="post" id="addform")
+        div
+            label First name :
+                br
+                input(type="text", name="fName" placeholder="Enter first name here" required id="fname_id" value=fName)
+        div
+            label Last name :
+                br
+                input(type="text", name="lName" placeholder="Enter second name here" required id="lname_id" value=lName)
+        div
+            label Twitter account :
+                br
+                input(type="text", name="twitterAccount" placeholder="e.x: @screen_name" required id="twitter_id" value=twitterAccount)
+        button(type="button" onclick="document.getElementById('addform').submit()") Submit

@@ -2,6 +2,7 @@ body {
   width: 85%;
   margin: 0 auto;
   font: 1em "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #ccc; 
 }
 
 ul li {
@@ -11,4 +12,27 @@ ul li {
 a {
   text-decoration: none;
   color: #00B7FF;
+}
+
+.users_list li span {
+  padding-right: .5em;
+}
+
+.users_list li span.twitter {
+  font-weight: bold;
+}
+
+form > div {
+  padding: .5em 0;
+}
+
+table tr {
+  width: 100%;
+  padding: 1em 0;
+}
+
+.error {
+  color: #c00;
+  font-weight: bold;
+  font-style: italic;
 }
